@@ -49,10 +49,10 @@
 
             // Verify that password meets given policy - position
             verifyPasswordByPosition() {
-                console.log(this.policy.max, this.policy.max + 1);
+                let charInFirstPosition = this.value[this.policy.firstPosition] == this.policy.char;
+                let charInSecondPosition = this.value[this.policy.secondPosition] == this.policy.char;
 
-                return (((this.value[this.policy.min - 1] == this.policy.char) && (this.value[this.policy.max - 1] != this.policy.char))
-                        || ((this.value[this.policy.max - 1] == this.policy.char) && (this.value[this.policy.min - 1] != this.policy.char)));
+                return ((charInFirstPosition && !charInSecondPosition) || (!charInFirstPosition && charInSecondPosition));
             }
         }
 
@@ -61,6 +61,9 @@
                 this.min = parseInt(min);
                 this.max = parseInt(max);
                 this.char = char;
+
+                this.firstPosition = parseInt(min) - 1;
+                this.secondPosition = parseInt(max) - 1;
             }
         }
 
