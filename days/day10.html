@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 10</title>
+</head>
+
+<body>
+
+    <div class="display">
+        <h2>Answer 1</h2>
+        <div class="answer1"></div>
+        <div class="answer1TimeDisplay"></div>
+
+        <h2>Answer 2</h2>
+        <div class="answer2"></div>
+        <div class="answer2TimeDisplay"></div>
+
+    </div>
+
+    <script>
+        // Setup
+        let answer1display = document.getElementsByClassName('answer1')[0];
+        let answer2display = document.getElementsByClassName('answer2')[0];
+        let answer1TimeDisplay = document.getElementsByClassName('answer1TimeDisplay')[0];
+        let answer2TimeDisplay = document.getElementsByClassName('answer2TimeDisplay')[0];
+
+        // Start timer answer 1
+        let answer1StartTime = performance.now();
+
+        const input = [76,12,97,28,132,107,145,121,84,34,115,127,22,23,11,135,113,82,140,119,69,77,83,36,13,37,92,133,122,99,147,112,42,62,65,40,123,139,33,129,149,68,41,16,48,109,5,27,142,81,90,9,78,103,26,100,141,59,55,120,126,1,35,2,20,114,58,54,10,51,116,93,6,134,108,47,70,91,138,63,19,64,148,106,21,98,43,30,146,46,128,73,94,87,29];
+
+        // Sort input in ascending order
+        input.sort((a,b) => a - b);
+
+        // Add 0 at beginning for charging outlet
+        input.unshift(0);
+
+        // Add device's built-in adapter - 3 jolts higher than highest-rated adapter in bag
+        input.push(input[input.length - 1] + 3);
+
+        let oneJoltDifferences = 0;
+        let threeJoltDifferences = 0;
+
+        // Iterate through input and count differences between subsequent numbers
+        for (let i=0; i < input.length - 1; i++) {
+
+            let difference = input[i+1] - input[i];
+
+            if (difference === 1) {
+                oneJoltDifferences++;
+            } else if (difference === 3) {
+                threeJoltDifferences++;
+            }
+        }
+
+        answer1display.innerHTML = `${oneJoltDifferences} differences of 1 jolt times ${threeJoltDifferences} differences of 3 jolts equals ${oneJoltDifferences * threeJoltDifferences}.`;
+
+        // End timer answer 1, display
+        let answer1EndTime = performance.now();
+        answer1TimeDisplay.innerHTML = `Answer 1 took ${answer1EndTime - answer1StartTime}ms.`
+
+
+        // Start timer answer 2
+        let answer2StartTime = performance.now();
+
+        // Object to store counts for each sequence by length
+        let sequenceCounts = {};
+
+        let currentIndex = 0;
+
+        // Iterate through input to find length of each sequence
+        while (currentIndex < input.length) {
+
+            let sequenceCount = 1;
+
+            let sequenceEndIndex; // ending index for current sequence
+
+            for (let j = currentIndex + 1; j < input.length; j++) {
+
+                if (input[j] - input[j - 1] === 1) { // increment count and keep checking for continued sequence
+                    sequenceCount++;
+                } else { // sequence over
+                    sequenceEndIndex = j - 1;
+                    break;
+                }
+            }
+
+            // Add sequence count to object if it doesn't exist yet, or increment it if it does exist
+            sequenceCounts[sequenceCount] = sequenceCounts[sequenceCount] ? sequenceCounts[sequenceCount] + 1 : 1;
+
+            currentIndex = sequenceEndIndex + 1; // jump to one past end of this sequence to look for next one
+        }
+
+        let numArrangements = 1;
+
+        for (const sequenceCount in sequenceCounts) {
+            
+            switch (sequenceCount) {
+                case '3':
+                    numArrangements *= Math.pow(2, sequenceCounts[3]);
+                    break;
+                case '4':
+                    numArrangements *= Math.pow(4, sequenceCounts[4]);
+                    break;
+                case '5':
+                    numArrangements *= Math.pow(7, sequenceCounts[5]);
+                    break;
+                case '6':
+                    numArrangements *= Math.pow(13, sequenceCounts[6]);
+                    break;
+            }
+        }
+
+        answer2display.innerHTML = `There are ${numArrangements} distinct arrangements.`;
+
+        // End timer answer 2, display
+        let answer2EndTime = performance.now();
+        answer2TimeDisplay.innerHTML = `Answer 2 took ${answer2EndTime - answer2StartTime}ms.`
+
+
+
+    </script>
+</body>
+
+</html>
